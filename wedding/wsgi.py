@@ -1,5 +1,5 @@
 """
-WSGI config for wedding project.
+WSGI config for wedding-api project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

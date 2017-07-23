@@ -1,62 +1,48 @@
 from restapi.models import Guest, Invitation
 from restapi.serializers import GuestSerializer, InvitationSerializer
-from rest_framework import generics
+from rest_framework import status, viewsets
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 
 
-# class GuestList(APIView):
-#     def get(self, request, format=None):
-#         guests = Guest.objects.all()
-#         serializer = GuestSerializer(guests, many=True)
-#         return Response(serializer.data)
-#
-#     def post(self, request, format=None):
-#         serializer = GuestSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-#
-# class GuestDetail(APIView):
-#     def get_object(self, pk):
-#         try:
-#             return Guest.objects.get(pk=pk)
-#         except Guest.DoesNotExist:
-#             raise Http404
-#
-#     def get(self, request, pk, format=None):
-#         guest = self.get_object(pk)
-#         serializer = GuestSerializer(guest)
-#         return Response(serializer.data)
-#
-#     def put(self, request, pk, format=None):
-#         guest = self.get_object(pk)
-#         serializer = GuestSerializer(guest, data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-#     def delete(self, request, pk, format=None):
-#         guest = self.get_object(pk)
-#         guest.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
-
-class GuestList(generics.ListCreateAPIView):
-    queryset = Guest.objects.all()
+class GuestViewSet(viewsets.ViewSet):
     serializer_class = GuestSerializer
 
+    def list(self, request, invitation_pk=None):
+        queryset = Guest.objects.filter(invitation=invitation_pk)
+        serializer = GuestSerializer(queryset, many=True)
+        return Response(serializer.data)
 
-class GuestDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Guest.objects.all()
-    serializer_class = GuestSerializer
+    def retrieve(self, request, pk=None, invitation_pk=None):
+        queryset = Guest.objects.filter(pk=pk, invitation=invitation_pk)
+        guest = get_object_or_404(queryset, pk=pk)
+        serializer = GuestSerializer(guest)
+        return Response(serializer.data)
+
+    def create(self, request, pk=None, invitation_pk=None):
+        serializer = GuestSerializer(data=request.data)
+
+        if serializer.is_valid():
+            queryset = Invitation.objects.filter()
+            # Make sure invitation actually exists
+            invitation = get_object_or_404(queryset, pk=invitation_pk)
+            Guest.objects.create(invitation=invitation, **serializer.validated_data)
+            return Response(serializer.data)
+        return Response({
+            'status': 'Bad request'
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class InvitationList(generics.ListCreateAPIView):
-    queryset = Invitation.objects.all()
+class InvitationViewSet(viewsets.ViewSet):
     serializer_class = InvitationSerializer
 
+    def list(self, request):
+        queryset = Invitation.objects.filter()
+        serializer = InvitationSerializer(queryset, many=True)
+        return Response(serializer.data)
 
-class InvitationDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Invitation.objects.all()
-    serializer_class = InvitationSerializer
+    def retrieve(self, request, pk=None):
+        queryset = Invitation.objects.filter()
+        invitation = get_object_or_404(queryset, pk=pk)
+        serializer = InvitationSerializer(invitation)
+        return Response(serializer.data)

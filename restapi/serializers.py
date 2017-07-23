@@ -24,10 +24,13 @@ class GuestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Guest
-        fields = ('id', 'name', 'invitation_id', 'offered_plus_one', 'bringing_plus_one', 'attending', 'food_choice')
+        fields = (
+            'id', 'name', 'invitation_id', 'offered_plus_one',
+            'bringing_plus_one',
+            'attending', 'food_choice')
 
 
 class InvitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invitation
-        fields = ('id', 'guests', 'sent', 'address', 'access_code')
+        fields = ('id', 'sent', 'address', 'access_code')

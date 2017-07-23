@@ -10,7 +10,8 @@ class Invitation(models.Model):
 
 class Guest(models.Model):
     created = models.DateTimeField(auto_now_add=True)
-    invitation_id = models.ForeignKey('Invitation', related_name='guests', on_delete=models.CASCADE)
+    invitation = models.ForeignKey(Invitation, related_name='guests',
+                                   on_delete=models.CASCADE)
     name = models.CharField(max_length=100, blank=False)
     offered_plus_one = models.BooleanField(blank=True, default=False)
     bringing_plus_one = models.BooleanField(blank=True, default=False)
