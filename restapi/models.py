@@ -7,6 +7,13 @@ class Invitation(models.Model):
     address = models.CharField(max_length=256, blank=True)
     access_code = models.CharField(max_length=10, blank=False)
 
+    def __str__(self):
+        return self.__unicode__()
+
+    def __unicode__(self):
+        return 'id: {}, sent: {}, code: {}'.format(self.id, self.sent,
+                                                   self.access_code)
+
 
 class Guest(models.Model):
     created = models.DateTimeField(auto_now_add=True)
@@ -20,3 +27,10 @@ class Guest(models.Model):
 
     class Meta:
         ordering = ('name',)
+
+    def __str__(self):
+        return self.__unicode__()
+
+    def __unicode__(self):
+        return 'id: {}, {}, attending: {}'.format(self.id, self.name,
+                                                 self.attending)

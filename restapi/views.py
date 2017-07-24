@@ -5,8 +5,11 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
 
-class GuestViewSet(viewsets.ViewSet):
+class GuestViewSet(viewsets.ModelViewSet):
     serializer_class = GuestSerializer
+
+    def get_queryset(self):
+        return Guest.objects.filter()
 
     def list(self, request, invitation_pk=None):
         queryset = Guest.objects.filter(invitation=invitation_pk)
@@ -22,27 +25,14 @@ class GuestViewSet(viewsets.ViewSet):
     def create(self, request, pk=None, invitation_pk=None):
         serializer = GuestSerializer(data=request.data)
 
-        if serializer.is_valid():
-            queryset = Invitation.objects.filter()
-            # Make sure invitation actually exists
-            invitation = get_object_or_404(queryset, pk=invitation_pk)
-            Guest.objects.create(invitation=invitation, **serializer.validated_data)
-            return Response(serializer.data)
-        return Response({
-            'status': 'Bad request'
-        }, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        queryset = Invitation.objects.filter()
+        # Make sure invitation actually exists
+        invitation = get_object_or_404(queryset, pk=invitation_pk)
+        Guest.objects.create(invitation=invitation, **serializer.validated_data)
+        return Response(serializer.data)
 
 
-class InvitationViewSet(viewsets.ViewSet):
+class InvitationViewSet(viewsets.ModelViewSet):
     serializer_class = InvitationSerializer
-
-    def list(self, request):
-        queryset = Invitation.objects.filter()
-        serializer = InvitationSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Invitation.objects.filter()
-        invitation = get_object_or_404(queryset, pk=pk)
-        serializer = InvitationSerializer(invitation)
-        return Response(serializer.data)
+    queryset = Invitation.objects.filter()
