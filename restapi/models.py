@@ -5,7 +5,7 @@ class Invitation(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     sent = models.BooleanField(blank=True, default=False)
     address = models.CharField(max_length=256, blank=True)
-    access_code = models.CharField(max_length=10, blank=False)
+    access_code = models.CharField(max_length=10, blank=True)
 
     def __str__(self):
         return self.__unicode__()
@@ -33,4 +33,19 @@ class Guest(models.Model):
 
     def __unicode__(self):
         return 'id: {}, {}, attending: {}'.format(self.id, self.name,
-                                                 self.attending)
+                                                  self.attending)
+
+
+class Gift(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=100, blank=False)
+    giver = models.ForeignKey(Guest, related_name='gifts',
+                              on_delete=models.CASCADE)
+    ty_sent = models.BooleanField(blank=True, default=False)
+
+    def __str__(self):
+        return self.__unicode__()
+
+    def __unicode__(self):
+        return 'id: {}, {}, thank you: {}'.format(self.id, self.name,
+                                                  self.ty_sent)
