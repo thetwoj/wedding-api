@@ -126,4 +126,4 @@ STATIC_URL = '/static/'
 
 
 # CORS configuration
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
