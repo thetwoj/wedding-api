@@ -1,6 +1,7 @@
 from django.conf.urls import url, include
 from restapi import views
 from rest_framework_nested import routers
+from rest_framework.authtoken import views as auth_views
 
 # /invitations
 router = routers.SimpleRouter()
@@ -24,4 +25,5 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^', include(invitations_router.urls)),
     url(r'^', include(guests_router.urls)),
+    url(r'^login/', auth_views.obtain_auth_token)
 ]
