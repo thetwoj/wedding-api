@@ -11,8 +11,9 @@ pip install mysqlclient
  * Pull `settings.py` from the prod server
  * Add `localhost` to `ALLOWED_HOSTS`
  * Disable `SECURE_SSL_REDIRECT`
+ * If standing up the frontend too - confirm `proxy` is set correctly in `package.json`
 
-Create database (if using local database)
+If using local (non-prod) database
 ```
 python manage.py migrate
 ```
