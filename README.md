@@ -8,7 +8,11 @@ pip install drf-nested-routers
 pip install mysqlclient
 ```
 
-Create database
+ * Pull `settings.py` from the prod server
+ * Add `localhost` to `ALLOWED_HOSTS`
+ * Disable `SECURE_SSL_REDIRECT`
+
+Create database (if using local database)
 ```
 python manage.py migrate
 ```
