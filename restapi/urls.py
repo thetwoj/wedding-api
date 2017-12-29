@@ -22,8 +22,8 @@ router.register(r'gifts', views.AllGiftViewSet)
 router.register(r'guests', views.AllGuestViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
-    url(r'^', include(invitations_router.urls)),
-    url(r'^', include(guests_router.urls)),
-    url(r'^login/', auth_views.obtain_auth_token)
+    url(r'^(api/)', include(router.urls)),
+    url(r'^(api/)', include(invitations_router.urls)),
+    url(r'^(api/)', include(guests_router.urls)),
+    url(r'^(api/)login/', auth_views.obtain_auth_token)
 ]
