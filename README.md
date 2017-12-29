@@ -4,7 +4,8 @@ Install dependencies
 ```
 pip install django
 pip install djangorestframework
-
+pip install drf-nested-routers
+pip install mysqlclient
 ```
 
 Create database
