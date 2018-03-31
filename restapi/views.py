@@ -1,6 +1,8 @@
-from restapi.models import Gift, Guest, Invitation
-from restapi.serializers import GiftSerializer, GuestSerializer, \
-    InvitationSerializer
+from restapi.models import Gift, Guest, Invitation, Slider
+from restapi.serializers import (
+    GiftSerializer, GuestSerializer,
+    InvitationSerializer, SliderSerializer
+)
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
@@ -75,3 +77,8 @@ class AllGiftViewSet(viewsets.ModelViewSet):
 class AllGuestViewSet(viewsets.ModelViewSet):
     serializer_class = GuestSerializer
     queryset = Guest.objects.filter()
+
+
+class AllSliderViewSet(viewsets.ModelViewSet):
+    serializer_class = SliderSerializer
+    queryset = Slider.objects.filter()

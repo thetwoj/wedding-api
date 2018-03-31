@@ -10,10 +10,8 @@ router.register(r'invitations', views.InvitationViewSet, base_name='invitations'
 invitations_router = routers.NestedSimpleRouter(router, r'invitations',
                                                 lookup='invitations')
 invitations_router.register(r'guests', views.GuestViewSet, base_name='guests')
-# /invitations/<#>/guests/<#>/gifts
-guests_router = routers.NestedSimpleRouter(invitations_router, r'guests',
-                                           lookup='guests')
-guests_router.register(r'gifts', views.GiftViewSet, base_name='gifts')
+# /invitations/<#>/gifts
+invitations_router.register(r'gifts', views.GiftViewSet, base_name='gifts')
 
 # All gifts
 router.register(r'gifts', views.AllGiftViewSet)
@@ -21,9 +19,11 @@ router.register(r'gifts', views.AllGiftViewSet)
 # All guests
 router.register(r'guests', views.AllGuestViewSet)
 
+# All sliders
+router.register(r'sliders', views.AllSliderViewSet)
+
 urlpatterns = [
     url(r'^(api/)', include(router.urls)),
     url(r'^(api/)', include(invitations_router.urls)),
-    url(r'^(api/)', include(guests_router.urls)),
     url(r'^(api/)login/', auth_views.obtain_auth_token)
 ]
