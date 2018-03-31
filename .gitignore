@@ -1,5 +1,4 @@
 .idea/
 db.*
 *.pyc
-restapi/migrations
 wedding/settings.py
