@@ -4,8 +4,8 @@ from django.db import models
 class Invitation(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     sent = models.BooleanField(blank=True, default=False)
-    address = models.CharField(max_length=256, blank=True)
-    access_code = models.CharField(max_length=10, blank=True)
+    address = models.CharField(max_length=256, blank=True, null=True)
+    access_code = models.CharField(max_length=10, blank=True, null=True)
     ty_sent = models.BooleanField(blank=True, default=False)
 
     def __str__(self):
@@ -30,7 +30,7 @@ class Guest(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     invitation = models.ForeignKey(Invitation, related_name='guests',
                                    on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, blank=False)
+    name = models.CharField(max_length=100, blank=False, null=True)
     offered_plus_one = models.BooleanField(blank=True, default=False)
     bringing_plus_one = models.BooleanField(blank=True, default=False)
     attending = models.NullBooleanField(blank=True, default=None)
