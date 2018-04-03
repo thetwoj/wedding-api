@@ -31,3 +31,11 @@ class InvitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invitation
         fields = ('id', 'sent', 'address', 'access_code', 'guests', 'gifts')
+
+
+class InvitationRSVPSerializer(serializers.ModelSerializer):
+    guests = GuestSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Invitation
+        fields = ('id', 'guests',)
