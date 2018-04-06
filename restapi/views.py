@@ -87,16 +87,11 @@ class AllSliderViewSet(viewsets.ModelViewSet):
     queryset = Slider.objects.filter()
 
 
-class InvitationRSVPView(APIView):
+class InvitationRSVPView(viewsets.ViewSet):
     permission_classes = (permissions.AllowAny,)
 
-    serializer_class = InvitationSerializer
-    queryset = Invitation.objects.filter()
-
-    def get(self, request, access_code):
-        if request.user.is_authenticated:
-            invitations = Invitation.objects.filter(access_code=access_code)
-        else:
-            invitations = Invitation.objects.filter(access_code=access_code)
-        serializer = InvitationRSVPSerializer(invitations, many=True)
+    def retrieve(self, _, access_code):
+        queryset = Invitation.objects.filter(access_code=access_code)
+        invitation = get_object_or_404(queryset)
+        serializer = InvitationRSVPSerializer(invitation)
         return Response(serializer.data)

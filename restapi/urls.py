@@ -22,7 +22,7 @@ router.register(r'guests', views.AllGuestViewSet)
 router.register(r'sliders', views.AllSliderViewSet)
 
 urlpatterns = [
-    url(r'^(?:api/)?rsvp/(?P<access_code>[\w]+)/$', views.InvitationRSVPView.as_view()),
+    url(r'^(?:api/)?rsvp/(?P<access_code>[\w]+)/$', views.InvitationRSVPView.as_view({'get': 'retrieve'})),
     url(r'^(?:api/)?', include(router.urls)),
     url(r'^(?:api/)?', include(invitations_router.urls)),
     url(r'^(?:api/)?login/', auth_views.obtain_auth_token)
