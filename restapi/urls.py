@@ -22,7 +22,12 @@ router.register(r'guests', views.AllGuestViewSet)
 router.register(r'sliders', views.AllSliderViewSet)
 
 urlpatterns = [
-    url(r'^(?:api/)?rsvp/(?P<access_code>[\w]+)/$', views.InvitationRSVPView.as_view({'get': 'retrieve'})),
+    url(r'^(?:api/)?rsvps/(?P<access_code>[\w]+)/$',
+        views.InvitationRSVPView.as_view({'get': 'retrieve'})),
+    url(r'^(?:api/)?rsvps/(?P<invitation_pk>[\w]+)/guests/$',
+        views.RsvpGuestView.as_view({'post': 'create'})),
+    url(r'^(?:api/)?rsvps/(?P<invitation_pk>[\w]+)/guests/(?P<guest_pk>[\w]+)$',
+        views.RsvpGuestView.as_view({'put': 'update'})),
     url(r'^(?:api/)?', include(router.urls)),
     url(r'^(?:api/)?', include(invitations_router.urls)),
     url(r'^(?:api/)?login/', auth_views.obtain_auth_token)
