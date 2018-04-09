@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^(?:api/)?rsvps/(?P<invitation_pk>[\w]+)/guests/$',
         views.RsvpGuestView.as_view({'post': 'create'})),
     url(r'^(?:api/)?rsvps/(?P<invitation_pk>[\w]+)/guests/(?P<guest_pk>[\w]+)$',
-        views.RsvpGuestView.as_view({'put': 'update'})),
+        views.RsvpGuestView.as_view({'put': 'update', 'delete': 'destroy'})),
     url(r'^(?:api/)?', include(router.urls)),
     url(r'^(?:api/)?', include(invitations_router.urls)),
     url(r'^(?:api/)?login/', auth_views.obtain_auth_token)

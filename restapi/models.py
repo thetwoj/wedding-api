@@ -3,6 +3,7 @@ from django.db import models
 
 class Invitation(models.Model):
     created = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
     sent = models.BooleanField(blank=True, default=False)
     address = models.CharField(max_length=256, blank=True, null=True)
     access_code = models.CharField(max_length=10, blank=True, null=True)
@@ -16,6 +17,8 @@ class Invitation(models.Model):
 
 
 class Slider(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=256, blank=False)
     description = models.CharField(max_length=1024, blank=False)
 
@@ -28,6 +31,7 @@ class Slider(models.Model):
 
 class Guest(models.Model):
     created = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
     invitation = models.ForeignKey(Invitation, related_name='guests',
                                    on_delete=models.CASCADE)
     name = models.CharField(max_length=100, blank=False, null=True)
@@ -35,7 +39,7 @@ class Guest(models.Model):
     bringing_plus_one = models.BooleanField(blank=True, default=False)
     attending = models.NullBooleanField(blank=True, default=None)
     invited_by = models.OneToOneField('self', on_delete=models.CASCADE, blank=True, null=True)
-    sliders = models.ManyToManyField(Slider, related_name='guests')
+    sliders = models.ManyToManyField(Slider, through='GuestSlider', related_name='guests')
 
     class Meta:
         ordering = ('name',)
@@ -47,8 +51,16 @@ class Guest(models.Model):
         return 'id: {}, {}, attending: {}'.format(self.id, self.name, self.attending)
 
 
+class GuestSlider(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
+    guest = models.ForeignKey(Guest, on_delete=models.CASCADE)
+    slider = models.ForeignKey(Slider, on_delete=models.CASCADE)
+
+
 class Gift(models.Model):
     created = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=100, blank=False)
     giver = models.ForeignKey(Invitation, related_name='gifts', on_delete=models.CASCADE)
 

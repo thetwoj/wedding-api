@@ -21,7 +21,7 @@ class GuestSerializer(serializers.ModelSerializer):
         model = Guest
         fields = (
             'id', 'name', 'invitation', 'offered_plus_one', 'bringing_plus_one',
-            'attending', 'sliders')
+            'attending', 'sliders', 'invited_by')
 
 
 class InvitationSerializer(serializers.ModelSerializer):

@@ -1,4 +1,4 @@
-from restapi.models import Gift, Guest, Invitation, Slider
+from restapi.models import Gift, Guest, Invitation, Slider, GuestSlider
 from restapi.serializers import (
     GiftSerializer, GuestSerializer,
     InvitationSerializer, SliderSerializer,
@@ -86,6 +86,7 @@ class AllGuestViewSet(viewsets.ModelViewSet):
 
 
 class AllSliderViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.AllowAny,)
     serializer_class = SliderSerializer
     queryset = Slider.objects.filter()
 
@@ -134,8 +135,13 @@ class RsvpGuestView(viewsets.ViewSet):
         serializer.validated_data['invitation'] = inviter.invitation
         serializer.validated_data['invited_by'] = inviter
 
-        Guest.objects.create(**serializer.validated_data)
-        return Response(serializer.data)
+        guest = Guest.objects.create(**serializer.validated_data)
+        guest = get_object_or_404(queryset, pk=guest.id)
+
+        # Indicate inviter is bringing +1
+        inviter.bringing_plus_one = True
+        inviter.save()
+        return Response(GuestSerializer(guest).data)
 
     def update(self, request, guest_pk, invitation_pk=None):
         # Make sure guest actually exists
@@ -146,9 +152,35 @@ class RsvpGuestView(viewsets.ViewSet):
         serializer = GuestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # Don't let request change name, offered_plus_one, invitation
+        # Don't let request change offered_plus_one, invitation
         guest.attending = request.data['attending']
-        guest.bringing_plus_one = guest.offered_plus_one and request.data['bringing_plus_one']
+
+        # Handle slider updates by clearing and re-setting
+        chosen_sliders = [Slider.objects.filter(pk=slider).get() for slider in request.data['sliders']]
+        guest.sliders.clear()
+        for slider in chosen_sliders:
+            GuestSlider(guest=guest, slider=slider).save()
+
+        # Only allow name change if it's a +1
+        if guest.invited_by:
+            guest.name = request.data['name']
 
         guest.save()
-        return Response(serializer.data)
+        guest = get_object_or_404(queryset, pk=guest.id)
+
+        return Response(GuestSerializer(guest).data)
+
+    def destroy(self, _, guest_pk, invitation_pk=None):
+        # Make sure guest actually exists
+        queryset = Guest.objects.filter()
+        guest = get_object_or_404(queryset, pk=guest_pk)
+
+        # Make sure guest is a +1
+        if not guest.invited_by:
+            return HttpResponse(status=404)
+
+        guest.invited_by.bringing_plus_one = False
+        guest.invited_by.save()
+
+        guest.delete()
+        return HttpResponse(status=204)
