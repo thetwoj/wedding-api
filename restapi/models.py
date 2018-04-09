@@ -6,7 +6,7 @@ class Invitation(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     sent = models.BooleanField(blank=True, default=False)
     address = models.CharField(max_length=256, blank=True, null=True)
-    access_code = models.CharField(max_length=10, blank=True, null=True)
+    access_code = models.CharField(max_length=48, blank=True, null=True)
     ty_sent = models.BooleanField(blank=True, default=False)
 
     def __str__(self):
