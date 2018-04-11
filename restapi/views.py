@@ -152,8 +152,9 @@ class RsvpGuestView(viewsets.ViewSet):
         serializer = GuestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # Don't let request change offered_plus_one, invitation
+        # Update the allowed fields
         guest.attending = request.data['attending']
+        guest.riding_bus = request.data['riding_bus']
 
         # Handle slider updates by clearing and re-setting
         chosen_sliders = [Slider.objects.filter(pk=slider).get() for slider in request.data['sliders']]

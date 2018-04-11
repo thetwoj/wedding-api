@@ -40,6 +40,7 @@ class Guest(models.Model):
     attending = models.NullBooleanField(blank=True, default=None)
     invited_by = models.OneToOneField('self', on_delete=models.CASCADE, blank=True, null=True)
     sliders = models.ManyToManyField(Slider, through='GuestSlider', related_name='guests')
+    riding_bus = models.NullBooleanField(blank=True, default=None)
 
     class Meta:
         ordering = ('name',)
